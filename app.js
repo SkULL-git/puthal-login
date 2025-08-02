@@ -1,25 +1,17 @@
-// 1. Replace with your actual config
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Firebase config (no import syntax needed)
 const firebaseConfig = {
   apiKey: "AIzaSyDWpZz98m8y54sfFkW01IHpgngJjWa1Rag",
   authDomain: "puthal-9451b.firebaseapp.com",
   projectId: "puthal-9451b",
-  storageBucket: "puthal-9451b.firebasestorage.app",
+  storageBucket: "puthal-9451b.appspot.com",
   messagingSenderId: "739809753187",
   appId: "1:739809753187:web:5a8a6f0d18999f41e22056",
   measurementId: "G-HL204H6M0S"
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 
 // =================== Signup ===================
 if (document.getElementById('signupForm')) {
@@ -54,8 +46,9 @@ if (document.getElementById('signupForm')) {
 
     auth.createUserWithEmailAndPassword(email, password)
       .then(() => {
+        localStorage.setItem('userName', name); // ✅ store name
         msg.textContent = "Signup successful!";
-        window.location.href = "dashboard.html";
+        window.location.href = "/puthal-login/dashboard.html"; // ✅ fix path
       })
       .catch(error => {
         msg.textContent = error.message;
@@ -69,7 +62,7 @@ if (document.getElementById('loginForm')) {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
-    const remember = document.getElementById('rememberMe').checked;
+    const remember = document.getElementById('rememberMe')?.checked;
     const msg = document.getElementById('loginMsg');
 
     if (!email || !password) {
@@ -83,7 +76,7 @@ if (document.getElementById('loginForm')) {
       return auth.signInWithEmailAndPassword(email, password);
     }).then(() => {
       msg.textContent = "Login successful!";
-      window.location.href = "dashboard.html";
+      window.location.href = "/puthal-login/dashboard.html"; // ✅ fix path
     }).catch(error => {
       msg.textContent = "Invalid Credentials";
     });
@@ -97,25 +90,14 @@ if (window.location.pathname.includes("dashboard.html")) {
       const name = localStorage.getItem('userName') || user.email;
       document.getElementById('welcomeMsg').textContent = `Welcome back, ${name}!`;
     } else {
-      window.location.href = "index.html";
+      window.location.href = "/puthal-login/index.html"; // ✅ redirect to login if not auth
     }
   });
 
   document.getElementById('logoutBtn').addEventListener('click', function () {
     auth.signOut().then(() => {
-      localStorage.removeItem('userName'); // clear name
-     window.location.href = "/puthal-login/dashboard.html";
-
+      localStorage.removeItem('userName');
+      window.location.href = "/puthal-login/index.html"; // ✅ go to login after logout
     });
   });
 }
-
-localStorage.setItem('userName', name);
-auth.createUserWithEmailAndPassword(email, password)
-  .then(() => {
-    localStorage.setItem('userName', name); // ✅ Store name
-    msg.textContent = "Signup successful!";
-    window.location.href = "dashboard.html";
-  })
-  
-  

@@ -1,43 +1,25 @@
-// Firebase config (no import syntax needed)
+// Firebase Config (replace with your actual config)
 const firebaseConfig = {
-  apiKey: "AIzaSyDWpZz98m8y54sfFkW01IHpgngJjWa1Rag",
-  authDomain: "puthal-9451b.firebaseapp.com",
-  projectId: "puthal-9451b",
-  storageBucket: "puthal-9451b.appspot.com",
-  messagingSenderId: "739809753187",
-  appId: "1:739809753187:web:5a8a6f0d18999f41e22056",
-  measurementId: "G-HL204H6M0S"
+  apiKey: "AIzaSyCggeh5flofwkl79AYQbVXN-obbT16swLw",
+  authDomain: "puthal-login1.firebaseapp.com",
+  projectId: "puthal-login1",
+  storageBucket: "puthal-login1.appspot.com",
+  messagingSenderId: "54527810515",
+  appId: "1:54527810515:web:9bd9b7ce7423a1c75bad26"
 };
 
-// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-// =================== Signup ===================
-if (document.getElementById('signupForm')) {
-  document.getElementById('signupForm').addEventListener('submit', function (e) {
+// Signup
+if (document.getElementById("signupForm")) {
+  document.getElementById("signupForm").addEventListener("submit", function (e) {
     e.preventDefault();
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('signupEmail').value.trim();
-    const password = document.getElementById('signupPassword').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-
-    const msg = document.getElementById('signupMsg');
-
-    if (!name || !email || !password || !confirmPassword) {
-      msg.textContent = "Please fill all fields.";
-      return;
-    }
-
-    if (!email.includes('@')) {
-      msg.textContent = "Invalid email format.";
-      return;
-    }
-
-    if (password.length < 6) {
-      msg.textContent = "Password too short.";
-      return;
-    }
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("signupEmail").value.trim();
+    const password = document.getElementById("signupPassword").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    const msg = document.getElementById("signupMsg");
 
     if (password !== confirmPassword) {
       msg.textContent = "Passwords do not match.";
@@ -46,58 +28,56 @@ if (document.getElementById('signupForm')) {
 
     auth.createUserWithEmailAndPassword(email, password)
       .then(() => {
-        localStorage.setItem('userName', name); // ✅ store name
+        localStorage.setItem("userName", name);
         msg.textContent = "Signup successful!";
-        window.location.href = "/puthal-login/dashboard.html"; // ✅ fix path
+        window.location.href = "dashboard.html";
       })
-      .catch(error => {
-        msg.textContent = error.message;
+      .catch(err => {
+        msg.textContent = err.message;
       });
   });
 }
 
-// =================== Login ===================
-if (document.getElementById('loginForm')) {
-  document.getElementById('loginForm').addEventListener('submit', function (e) {
+// Login
+if (document.getElementById("loginForm")) {
+  document.getElementById("loginForm").addEventListener("submit", function (e) {
     e.preventDefault();
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
-    const remember = document.getElementById('rememberMe')?.checked;
-    const msg = document.getElementById('loginMsg');
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+    const remember = document.getElementById("rememberMe").checked;
+    const msg = document.getElementById("loginMsg");
 
-    if (!email || !password) {
-      msg.textContent = "Please fill all fields.";
-      return;
-    }
+    const persistence = remember
+      ? firebase.auth.Auth.Persistence.LOCAL
+      : firebase.auth.Auth.Persistence.SESSION;
 
-    const persistence = remember ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
-
-    auth.setPersistence(persistence).then(() => {
-      return auth.signInWithEmailAndPassword(email, password);
-    }).then(() => {
-      msg.textContent = "Login successful!";
-      window.location.href = "/puthal-login/dashboard.html"; // ✅ fix path
-    }).catch(error => {
-      msg.textContent = "Invalid Credentials";
-    });
+    auth.setPersistence(persistence)
+      .then(() => auth.signInWithEmailAndPassword(email, password))
+      .then(() => {
+        msg.textContent = "Login successful!";
+        window.location.href = "dashboard.html";
+      })
+      .catch(() => {
+        msg.textContent = "Invalid Credentials";
+      });
   });
 }
 
-// =================== Dashboard Auth Check ===================
+// Auth Guard on Dashboard
 if (window.location.pathname.includes("dashboard.html")) {
   auth.onAuthStateChanged(user => {
     if (user) {
-      const name = localStorage.getItem('userName') || user.email;
-      document.getElementById('welcomeMsg').textContent = `Welcome back, ${name}!`;
+      const name = localStorage.getItem("userName") || user.email;
+      document.getElementById("welcomeMsg").textContent = `Welcome back, ${name}!`;
     } else {
-      window.location.href = "/puthal-login/index.html"; // ✅ redirect to login if not auth
+      window.location.href = "index.html";
     }
   });
 
-  document.getElementById('logoutBtn').addEventListener('click', function () {
+  document.getElementById("logoutBtn").addEventListener("click", function () {
     auth.signOut().then(() => {
-      localStorage.removeItem('userName');
-      window.location.href = "/puthal-login/index.html"; // ✅ go to login after logout
+      localStorage.removeItem("userName");
+      window.location.href = "index.html";
     });
   });
 }

@@ -1,126 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Signup - Puthal</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <title>Puthal Signup</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-
-<!-- Your JS file -->
-<script src="app.js" defer></script>
-
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #0b1120;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .logo-img {
-      width: 120px;
-      margin-bottom: 15px;
-    }
-    .brand-name {
-      font-size: 24px;
-      font-weight: 600;
-      color: #ffffff;
-      margin-bottom: 20px;
-      letter-spacing: 1px;
-    }
-    form {
-      background: #12192b;
-      padding: 30px 40px;
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      width: 100%;
-      max-width: 400px;
-      color: white;
-      animation: fadeIn 0.5s ease-in-out;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #ffffff;
-    }
-    input {
-      width: 100%;
-      padding: 12px 10px;
-      margin: 10px 0;
-      border: 1px solid #555;
-      border-radius: 6px;
-      background-color: #1e293b;
-      color: white;
-      font-size: 16px;
-    }
-    input::placeholder {
-      color: #cbd5e1;
-    }
-    label {
-      font-size: 14px;
-      color: #ccc;
-      display: inline-block;
-      margin: 10px 0;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #4caf50;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 15px;
-      transition: background-color 0.3s ease;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    p {
-      text-align: center;
-      margin-top: 15px;
-      color: #ccc;
-    }
-    a {
-      color: #38bdf8;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    #signupMsg {
-      text-align: center;
-      color: #ff6961;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Firebase CDN -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+  <script src="app.js" defer></script>
 </head>
 <body>
-
-  <img src="IMG-20250709-WA0004.jpg" alt="Puthal Logo" class="logo-img" />
-
-  <form id="signupForm">
+  <div class="container">
+    <img src="IMG-20250709-WA0004.jpg" alt="Puthal Logo" class="logo-img" />
     <h2>Signup</h2>
-    <input type="text" id="name" placeholder="Name" required />
-    <input type="email" id="signupEmail" placeholder="Email" required />
-    <input type="password" id="signupPassword" placeholder="Password" required />
-    <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
-    <button type="submit">Signup</button>
+    <form id="signupForm">
+      <input type="text" id="name" placeholder="Full Name" required />
+      <input type="email" id="signupEmail" placeholder="Email" required />
+      <input type="password" id="signupPassword" placeholder="Password" required />
+      <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
+      <button type="submit">Signup</button>
+    </form>
     <p id="signupMsg"></p>
     <p>Already have an account? <a href="index.html">Login</a></p>
-  </form>
-
+  </div>
 </body>
 </html>

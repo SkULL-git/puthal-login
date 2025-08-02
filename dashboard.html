@@ -1,103 +1,103 @@
-<!DOCTYPE html>
-<html lang="en">
+// ✅ Firebase config for browser (CDN compatible)
+const firebaseConfig = {
+  apiKey: "AIzaSyCggeh5flofwkl79AYQbVXN-obbT16swLw",
+  authDomain: "puthal-login1.firebaseapp.com",
+  projectId: "puthal-login1",
+  storageBucket: "puthal-login1.appspot.com",
+  messagingSenderId: "54527810515",
+  appId: "1:54527810515:web:9bd9b7ce7423a1c75bad26",
+  measurementId: "G-TN3WVVHNK2"
+};
 
-<head>
-  <meta charset="UTF-8">
-  <title>Dashboard - Puthal</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-  <script src="app.js" defer></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #0b1120;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      color: white;
+// ✅ Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// =================== Signup ===================
+if (document.getElementById('signupForm')) {
+  document.getElementById('signupForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    const msg = document.getElementById('signupMsg');
+
+    if (!name || !email || !password || !confirmPassword) {
+      msg.textContent = "Please fill all fields.";
+      return;
     }
 
-    .container {
-      background: #12192b;
-      padding: 30px 40px;
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      text-align: center;
-      width: 100%;
-      max-width: 400px;
-      animation: fadeIn 0.5s ease-in-out;
+    if (!email.includes('@')) {
+      msg.textContent = "Invalid email format.";
+      return;
     }
 
-    .logo-img {
-      width: 100px;
-      height: auto;
-      margin-bottom: 10px;
+    if (password.length < 6) {
+      msg.textContent = "Password too short.";
+      return;
     }
 
-    .brand-name {
-      font-size: 20px;
-      font-weight: 600;
-      color: #ffffff;
-      margin-bottom: 20px;
-      letter-spacing: 1px;
+    if (password !== confirmPassword) {
+      msg.textContent = "Passwords do not match.";
+      return;
     }
 
-    h2 {
-      margin-bottom: 10px;
-      color: #fff;
+    auth.createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        localStorage.setItem('userName', name);
+        msg.textContent = "Signup successful!";
+        window.location.href = "/puthal-login/dashboard.html";
+      })
+      .catch(error => {
+        msg.textContent = error.message;
+      });
+  });
+}
+
+// =================== Login ===================
+if (document.getElementById('loginForm')) {
+  document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const remember = document.getElementById('rememberMe')?.checked;
+    const msg = document.getElementById('loginMsg');
+
+    if (!email || !password) {
+      msg.textContent = "Please fill all fields.";
+      return;
     }
 
-    #welcomeMsg {
-      color: #4caf50;
-      font-size: 18px;
-      font-weight: bold;
-      margin: 15px 0 25px 0;
+    const persistence = remember ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
+
+    auth.setPersistence(persistence).then(() => {
+      return auth.signInWithEmailAndPassword(email, password);
+    }).then(() => {
+      msg.textContent = "Login successful!";
+      window.location.href = "/puthal-login/dashboard.html";
+    }).catch(error => {
+      msg.textContent = "Invalid Credentials";
+    });
+  });
+}
+
+// =================== Dashboard Auth Check ===================
+if (window.location.pathname.includes("dashboard.html")) {
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      const name = localStorage.getItem('userName') || user.email;
+      document.getElementById('welcomeMsg').textContent = `Welcome back, ${name}!`;
+    } else {
+      window.location.href = "/puthal-login/index.html";
     }
+  });
 
-    button {
-      padding: 12px 20px;
-      background-color: #f44336;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #d32f2f;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-  </style>
-</head>
-
-<body>
-
-  <div class="container">
-    <img src="IMG-20250709-WA0004.jpg" alt="Puthal Logo" class="logo-img" />
-    
-
-    <h1>Welcome Back!</h1>
-    <!-- <p id="welcomeMsg">Loading...</p> -->
-    <button id="logoutBtn">Logout</button>
-  </div>
-
-</body>
-
-</html>
+  document.getElementById('logoutBtn')?.addEventListener('click', function () {
+    auth.signOut().then(() => {
+      localStorage.removeItem('userName');
+      window.location.href = "/puthal-login/index.html";
+    });
+  });
+}

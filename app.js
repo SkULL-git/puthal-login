@@ -94,7 +94,8 @@ if (document.getElementById('loginForm')) {
 if (window.location.pathname.includes("dashboard.html")) {
   auth.onAuthStateChanged(user => {
     if (user) {
-      document.getElementById('welcomeMsg').textContent = `Welcome back, ${user.email}`;
+      const name = localStorage.getItem('userName') || user.email;
+      document.getElementById('welcomeMsg').textContent = `Welcome back, ${name}!`;
     } else {
       window.location.href = "index.html";
     }
@@ -102,7 +103,18 @@ if (window.location.pathname.includes("dashboard.html")) {
 
   document.getElementById('logoutBtn').addEventListener('click', function () {
     auth.signOut().then(() => {
+      localStorage.removeItem('userName'); // clear name
       window.location.href = "index.html";
     });
   });
 }
+
+localStorage.setItem('userName', name);
+auth.createUserWithEmailAndPassword(email, password)
+  .then(() => {
+    localStorage.setItem('userName', name); // ✅ Store name
+    msg.textContent = "Signup successful!";
+    window.location.href = "dashboard.html";
+  })
+  
+  

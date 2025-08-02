@@ -104,7 +104,8 @@ if (window.location.pathname.includes("dashboard.html")) {
   document.getElementById('logoutBtn').addEventListener('click', function () {
     auth.signOut().then(() => {
       localStorage.removeItem('userName'); // clear name
-      window.location.href = "index.html";
+     window.location.href = "/puthal-login/dashboard.html";
+
     });
   });
 }

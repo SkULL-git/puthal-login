@@ -1,4 +1,4 @@
-// Firebase Config (replace with your actual config)
+// Replace with your actual Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCggeh5flofwkl79AYQbVXN-obbT16swLw",
   authDomain: "puthal-login1.firebaseapp.com",
@@ -11,9 +11,9 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-// Signup
+// Signup form handling
 if (document.getElementById("signupForm")) {
-  document.getElementById("signupForm").addEventListener("submit", function (e) {
+  document.getElementById("signupForm").addEventListener("submit", e => {
     e.preventDefault();
     const name = document.getElementById("name").value.trim();
     const email = document.getElementById("signupEmail").value.trim();
@@ -21,8 +21,8 @@ if (document.getElementById("signupForm")) {
     const confirmPassword = document.getElementById("confirmPassword").value;
     const msg = document.getElementById("signupMsg");
 
-    if (password !== confirmPassword) {
-      msg.textContent = "Passwords do not match.";
+    if (!name || !email || !password || password !== confirmPassword) {
+      msg.textContent = "Please fill all fields & passwords must match.";
       return;
     }
 
@@ -38,19 +38,21 @@ if (document.getElementById("signupForm")) {
   });
 }
 
-// Login
+// Login form handling
 if (document.getElementById("loginForm")) {
-  document.getElementById("loginForm").addEventListener("submit", function (e) {
+  document.getElementById("loginForm").addEventListener("submit", e => {
     e.preventDefault();
     const email = document.getElementById("loginEmail").value.trim();
     const password = document.getElementById("loginPassword").value;
-    const remember = document.getElementById("rememberMe").checked;
+    const remember = document.getElementById("rememberMe")?.checked;
     const msg = document.getElementById("loginMsg");
 
-    const persistence = remember
-      ? firebase.auth.Auth.Persistence.LOCAL
-      : firebase.auth.Auth.Persistence.SESSION;
+    if (!email || !password) {
+      msg.textContent = "Please fill all fields.";
+      return;
+    }
 
+    const persistence = remember ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
     auth.setPersistence(persistence)
       .then(() => auth.signInWithEmailAndPassword(email, password))
       .then(() => {
@@ -58,12 +60,12 @@ if (document.getElementById("loginForm")) {
         window.location.href = "dashboard.html";
       })
       .catch(() => {
-        msg.textContent = "Invalid Credentials";
+        msg.textContent = "Invalid credentials.";
       });
   });
 }
 
-// Auth Guard on Dashboard
+// Auth guard on dashboard
 if (window.location.pathname.includes("dashboard.html")) {
   auth.onAuthStateChanged(user => {
     if (user) {
@@ -74,7 +76,7 @@ if (window.location.pathname.includes("dashboard.html")) {
     }
   });
 
-  document.getElementById("logoutBtn").addEventListener("click", function () {
+  document.getElementById("logoutBtn")?.addEventListener("click", () => {
     auth.signOut().then(() => {
       localStorage.removeItem("userName");
       window.location.href = "index.html";
